@@ -1,8 +1,8 @@
-var NagornevaReviewsWidget = (function(exports) {
-  "use strict";var __defProp = Object.defineProperty;
+var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-
+(function() {
+  "use strict";
   const TAG_NAME = "nagorneva-reviews-map";
   const DEFAULT_CENTER = [52, 57.3];
   const YANDEX_READY_TIMEOUT_MS = 2e4;
@@ -21,6 +21,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   <path d="M16.55 23.8375L22.85 27.8375C23.6625 28.35 24.6625 27.5875 24.425 26.65L22.6 19.475C22.5506 19.2761 22.5585 19.0673 22.6226 18.8727C22.6868 18.6781 22.8046 18.5055 22.9625 18.375L28.6125 13.6625C29.35 13.05 28.975 11.8125 28.0125 11.75L20.6375 11.275C20.4363 11.2633 20.2428 11.1932 20.0808 11.0733C19.9187 10.9534 19.7951 10.789 19.725 10.6L16.975 3.67497C16.9022 3.47485 16.7696 3.30197 16.5952 3.17981C16.4207 3.05765 16.2129 2.99213 16 2.99213C15.787 2.99213 15.5793 3.05765 15.4048 3.17981C15.2304 3.30197 15.0978 3.47485 15.025 3.67497L12.275 10.6C12.2049 10.789 12.0813 10.9534 11.9192 11.0733C11.7572 11.1932 11.5637 11.2633 11.3625 11.275L3.98749 11.75C3.02499 11.8125 2.64999 13.05 3.38749 13.6625L9.0375 18.375C9.19541 18.5055 9.31323 18.6781 9.37736 18.8727C9.4415 19.0673 9.44934 19.2761 9.39999 19.475L7.71249 26.125C7.42499 27.25 8.62499 28.1625 9.58749 27.55L15.45 23.8375C15.6144 23.7329 15.8052 23.6774 16 23.6774C16.1948 23.6774 16.3856 23.7329 16.55 23.8375Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
   let widgetInstanceCounter = 0;
+  let widgetRuntimeConfig = {};
   function debugInfo(_message, _details) {
   }
   function debugWarn(message, details) {
@@ -49,8 +50,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   nagorneva-reviews-map .nrw-shell,
   nagorneva-reviews-map .nrw-shell * { box-sizing: border-box; }
   nagorneva-reviews-map .nrw-shell button { font: inherit; }
-  .nrw-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; height: 651px; min-height: 651px; overflow-anchor: none; background: #9daec0; }
-  .nrw-map-wrap { position: relative; min-width: 0; min-height: 651px; overflow: hidden; background: #dfe4e9; }
+  .nrw-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; height: 683px; min-height: 683px; overflow-anchor: none; background: #9daec0; }
+  .nrw-map-wrap { position: relative; min-width: 0; min-height: 683px; overflow: hidden; background: #dfe4e9; }
   .nrw-map { position: absolute; inset: 0; }
   .nrw-map .ymaps3--marker { pointer-events: none; }
   .nrw-map-loader { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -61,17 +62,24 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-map-placeholder[hidden] { display: none; }
   .nrw-map-placeholder::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(25deg, transparent 0 46px, rgba(255,255,255,.27) 47px 49px); }
   .nrw-map-placeholder span { position: relative; z-index: 1; max-width: 340px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,.86); }
-  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 651px; padding: 29px 40px 40px; overflow: hidden; flex-direction: column; }
+  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 683px; padding: 29px 40px 40px; overflow: hidden; flex-direction: column; }
   .nrw-title { margin: 0 0 23px; font-size: 32px; line-height: 1.2; font-weight: 600; }
   .nrw-description { max-width: 831px; margin: 0; font-size: 20px; line-height: 1.3; }
-  .nrw-review-area { min-height: 0; margin-top: 72px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
+  .nrw-review-area { position: relative; min-height: 0; margin-top: 72px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
   .nrw-review-area[hidden] { display: none; }
-  .nrw-review-list { display: flex; width: 100%; min-width: 0; height: 100%; min-height: 0; gap: 12px; padding-right: 4px; overflow-x: hidden; overflow-y: auto; flex-direction: column; scrollbar-color: #9daec0 transparent; scrollbar-width: thin; }
-  .nrw-review-list::-webkit-scrollbar { width: 6px; }
-  .nrw-review-list::-webkit-scrollbar-track { background: transparent; }
-  .nrw-review-list::-webkit-scrollbar-thumb { border-radius: 999px; background: #9daec0; }
+  .nrw-review-area.has-review-list { display: flex; flex-direction: column; gap: 12px; }
+  .nrw-city { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 9px 15px; overflow: hidden; border: 1px solid rgba(157,174,192,.45); border-radius: 999px; color: #53697d; background: #cbd6df; box-shadow: 0 5px 12px rgba(91,110,128,.16); font-size: 14px; line-height: 1.3; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; flex: 0 0 auto; }
+  .nrw-review-scroll { width: 100%; min-width: 0; min-height: 0; overflow: hidden; border-radius: 15px; flex: 1 1 auto; }
+  .nrw-review-list { display: flex; width: 100%; min-width: 0; height: 100%; min-height: 0; gap: 12px; padding-right: 4px; overflow-x: hidden; overflow-y: auto; flex-direction: column; }
+  .nrw-review-list::-webkit-scrollbar { width: 5px; }
+  .nrw-review-list::-webkit-scrollbar-track { box-sizing: border-box; margin: 10px 0; border-radius: 50% / 3px; background: rgba(157,174,192,.22); }
+  .nrw-review-list::-webkit-scrollbar-thumb { border-radius: 50% / 3px; background-color: #9daec0; }
+  @supports not selector(::-webkit-scrollbar) {
+    .nrw-review-list { scrollbar-color: #9daec0 rgba(157,174,192,.22); scrollbar-width: thin; }
+  }
   .nrw-card { width: 100%; min-width: 0; max-width: 100%; height: fit-content; min-height: 280px; padding: 19px 20px 16px; border: 1px solid rgba(181,195,208,.5); border-radius: 15px; color: #111; background: #fff; flex-shrink: 0; }
-  .nrw-card.is-without-review { border-style: dashed; background: rgba(255,255,255,.72); }
+  .nrw-card.is-without-review { width: 100%; height: fit-content; min-height: 0; max-width: 100%; padding: 16px 18px; align-self: stretch; border: 0; background: rgba(255,255,255,.72); }
+  .nrw-card.is-without-review .nrw-comment { margin-bottom: 0; }
   .nrw-card > * { min-width: 0; max-width: 100%; }
   .nrw-card-head { display: flex; width: 100%; min-width: 0; max-width: 100%; margin-bottom: 17px; align-items: center; justify-content: space-between; gap: 12px; }
   .nrw-course { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 10px 15px; overflow: hidden; border-radius: 999px; background: rgba(223,228,233,.4); color: rgba(0,0,0,.7); font-size: 14px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; }
@@ -83,6 +91,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-rating-star.is-filled path { fill: currentColor; }
   .nrw-comment { margin: 0 0 12px; overflow-wrap: anywhere; font-size: 16px; line-height: 1.3; white-space: pre-line; }
   .nrw-comment.is-empty { color: rgba(0,0,0,.5); font-style: italic; }
+  .nrw-training-note { color: rgba(0,0,0,.5); }
   .nrw-author { margin: 0; overflow-wrap: anywhere; color: rgba(0,0,0,.5); font-size: 16px; line-height: 1.3; }
   .nrw-status { display: flex; align-items: center; justify-content: center; min-height: 280px; padding: 30px; border-radius: 15px; color: #65717d; text-align: center; background: #fff; }
   .nrw-retry { margin-left: 10px; padding: 8px 13px; border: 0; border-radius: 999px; color: #fff; background: #9daec0; cursor: pointer; }
@@ -102,15 +111,17 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-panel { display: block; height: auto; min-height: 0; padding: 26px 20px 17px; overflow: visible; }
     .nrw-title { margin-bottom: 18px; font-size: 22px; white-space: nowrap; }
     .nrw-description { font-size: 15px; }
-    .nrw-review-area { min-height: 381px; margin: 21px -20px 0; padding: 15px; }
-    .nrw-review-list { height: auto; max-height: 351px; padding-right: 4px; overflow-x: hidden; overflow-y: auto; scrollbar-color: #9daec0 transparent; scrollbar-width: thin; }
-    .nrw-card { min-height: 351px; padding: 19px; }
+    .nrw-review-area { min-height: 412px; margin: 21px -20px 0; padding: 15px; }
+    .nrw-review-area.has-review-list { height: 412px; }
+    .nrw-review-list { height: 100%; max-height: none; margin: 0; padding-right: 4px; overflow-x: hidden; overflow-y: auto; }
+    .nrw-city { padding: 8px 13px; font-size: 12px; }
+    .nrw-card { min-height: 379px; padding: 19px; }
     .nrw-course { margin-bottom: 17px; font-size: 12px; }
     .nrw-card-head { margin-bottom: 17px; align-items: flex-start; flex-direction: column; gap: 10px; }
     .nrw-card-head .nrw-course { margin-bottom: 0; }
     .nrw-rating-star { width: 14px; height: 14px; }
     .nrw-comment, .nrw-author { font-size: 14px; }
-    .nrw-status { min-height: 352px; }
+    .nrw-status { min-height: 380px; }
     .nrw-marker { transform: translate(-50%, -100%) scale(.83); }
   }
   @media (max-width: 389px) {
@@ -147,6 +158,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       lon,
       reviews
     };
+  }
+  let demoDoctorsCache;
+  function getDemoDoctors() {
+    if (demoDoctorsCache) return demoDoctorsCache;
+    const doctors = (widgetRuntimeConfig.demoDoctors ?? []).map(normalizeDoctor).filter((doctor) => Boolean(doctor));
+    demoDoctorsCache = doctors;
+    return doctors;
   }
   function createRatingElement(rawRating) {
     const rating = Math.round(rawRating);
@@ -317,9 +335,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       __publicField(this, "clusterer");
       __publicField(this, "markerEntities", []);
       __publicField(this, "abort");
+      __publicField(this, "fetchTimer");
       __publicField(this, "latestBounds");
       __publicField(this, "lastViewportKey", "");
       __publicField(this, "requestId", 0);
+      __publicField(this, "isDemo", false);
       __publicField(this, "selectedGroup");
       __publicField(this, "selectedGroupKey", "");
       this.root = this;
@@ -339,6 +359,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     disconnectedCallback() {
       var _a, _b, _c;
       debugWarn(`Виджет #${this.debugId}: disconnectedCallback`);
+      if (this.fetchTimer) window.clearTimeout(this.fetchTimer);
       (_a = this.abort) == null ? void 0 : _a.abort();
       (_c = (_b = this.map) == null ? void 0 : _b.destroy) == null ? void 0 : _c.call(_b);
     }
@@ -362,8 +383,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       debugInfo(`Виджет #${this.debugId}: HTML и CSS добавлены в DOM`);
     }
     async load() {
-      var _a;
+      var _a, _b;
+      this.isDemo = Boolean((_a = widgetRuntimeConfig.demoDoctors) == null ? void 0 : _a.length);
       debugInfo(`Виджет #${this.debugId}: начинаем load()`, {
+        demo: this.isDemo,
         apiUrl: this.getAttribute("api-url") || "(не указан)"
       });
       this.hideReviewArea();
@@ -371,7 +394,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this.doctors = [];
         await this.mountMap();
         await nextAnimationFrame();
-        this.latestBounds = ((_a = this.map) == null ? void 0 : _a.bounds) ?? this.latestBounds;
+        this.latestBounds = ((_b = this.map) == null ? void 0 : _b.bounds) ?? this.latestBounds;
         await this.refreshDoctorsForViewport(true);
         debugInfo(`Виджет #${this.debugId}: отзывы подготовлены`, {
           doctors: this.doctors.length,
@@ -386,6 +409,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     async fetchDoctors(center, radiusKm) {
       var _a;
+      if (this.isDemo) {
+        return getDemoDoctors().filter((doctor) => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
+      }
       const apiUrl = (this.getAttribute("api-url") || "").replace(/\/$/, "");
       if (!apiUrl) throw new Error("Для виджета не указан api-url");
       (_a = this.abort) == null ? void 0 : _a.abort();
@@ -404,6 +430,23 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (!response.ok) throw new Error(`API вернул ошибку ${response.status}`);
       const payload = await response.json();
       return (payload.doctors ?? []).map(normalizeDoctor).filter((item) => Boolean(item));
+    }
+    scheduleViewportRefresh(bounds) {
+      var _a;
+      if (bounds) this.latestBounds = bounds;
+      const delayMs = widgetRuntimeConfig.viewportFetchDelayMs ?? 0;
+      if (!this.isDemo || delayMs <= 0) {
+        void this.refreshDoctorsForViewport();
+        return;
+      }
+      if (this.fetchTimer) window.clearTimeout(this.fetchTimer);
+      (_a = this.abort) == null ? void 0 : _a.abort();
+      this.requestId += 1;
+      this.setMapLoading(true);
+      this.fetchTimer = window.setTimeout(() => {
+        this.fetchTimer = void 0;
+        void this.refreshDoctorsForViewport();
+      }, delayMs);
     }
     async refreshDoctorsForViewport(force = false) {
       var _a;
@@ -492,8 +535,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             if (location.bounds) this.latestBounds = location.bounds;
           },
           onActionEnd: ({ location }) => {
-            if (location.bounds) this.latestBounds = location.bounds;
-            void this.refreshDoctorsForViewport();
+            this.scheduleViewportRefresh(location.bounds);
           }
         }));
         registerYandexPackages(ymaps);
@@ -614,11 +656,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       const area = this.root.querySelector(".nrw-review-area");
       this.selectedGroup = group;
       this.selectedGroupKey = markerGroupKey(group);
+      area.classList.add("has-review-list");
       if (!items.length) {
-        const cities = [...new Set(group.doctors.map((doctor) => doctor.city).filter(Boolean))];
+        const cities2 = [...new Set(group.doctors.map((doctor) => doctor.city).filter(Boolean))];
         const names = group.doctors.map((doctor) => doctor.name).filter(Boolean);
-        const place = cities.length === 1 ? `, город ${cities[0]}` : "";
-        const message = names.length === 1 ? `${names[0]}${place} — пока нет опубликованных отзывов.` : `У специалистов${cities.length === 1 ? ` в городе ${cities[0]}` : ""} пока нет опубликованных отзывов.`;
+        const place = cities2.length === 1 ? `, город ${cities2[0]}` : "";
+        const message = names.length === 1 ? `${names[0]}${place} — проходила обучение у Станиславы Нагорневой` : `Специалисты${cities2.length === 1 ? ` из города ${cities2[0]}` : ""} проходили обучение у Станиславы Нагорневой`;
         this.showStatus(message);
         return;
       }
@@ -628,12 +671,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       list.className = "nrw-review-list";
       list.setAttribute("role", "list");
       list.setAttribute("aria-label", `Карточки специалистов и отзывов: ${items.length}`);
+      const cities = [...new Set(group.doctors.map((doctor) => doctor.city.trim()).filter(Boolean))];
+      if (cities.length) {
+        const city = document.createElement("p");
+        city.className = "nrw-city";
+        city.textContent = cities.length === 1 ? `Город: ${cities[0]}` : `Города: ${cities.join(", ")}`;
+        area.append(city);
+      }
       items.forEach(({ doctor, review }) => {
         const card = document.createElement("article");
         card.className = "nrw-card";
         card.setAttribute("role", "listitem");
         const comment = document.createElement("p");
         comment.className = "nrw-comment";
+        const authorText = doctor.name;
         if (review) {
           const header = document.createElement("div");
           header.className = "nrw-card-head";
@@ -652,16 +703,25 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           }
         } else {
           card.classList.add("is-without-review");
-          comment.classList.add("is-empty");
-          comment.textContent = "Пока нет опубликованных отзывов.";
+          comment.append(document.createTextNode(authorText));
+          const trainingNote = document.createElement("span");
+          trainingNote.className = "nrw-training-note";
+          trainingNote.textContent = " — проходила обучение у Станиславы Нагорневой";
+          comment.append(trainingNote);
+          card.append(comment);
+          list.append(card);
+          return;
         }
         const author = document.createElement("p");
         author.className = "nrw-author";
-        author.textContent = [doctor.name, doctor.city ? `город ${doctor.city}` : ""].filter(Boolean).join(", ");
+        author.textContent = authorText;
         card.append(comment, author);
         list.append(card);
       });
-      area.append(list);
+      const scroll = document.createElement("div");
+      scroll.className = "nrw-review-scroll";
+      scroll.append(list);
+      area.append(scroll);
       list.scrollTop = 0;
       debugInfo(`Виджет #${this.debugId}: открыт список отзывов`, {
         cards: items.length,
@@ -671,6 +731,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     showStatus(message) {
       const area = this.root.querySelector(".nrw-review-area");
+      area.classList.remove("has-review-list");
       area.hidden = false;
       area.innerHTML = "";
       const status = document.createElement("div");
@@ -682,6 +743,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       const area = this.root.querySelector(".nrw-review-area");
       this.selectedGroup = void 0;
       this.selectedGroupKey = "";
+      area.classList.remove("has-review-list");
       area.hidden = true;
       area.innerHTML = "";
     }
@@ -691,6 +753,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     showError(message) {
       const area = this.root.querySelector(".nrw-review-area");
+      area.classList.remove("has-review-list");
       area.hidden = false;
       area.innerHTML = "";
       const status = document.createElement("div");
@@ -708,12 +771,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       area.append(status);
     }
   }
-  if (!customElements.get(TAG_NAME)) {
-    customElements.define(TAG_NAME, NagornevaReviewsMap);
-  } else {
-    debugWarn(`Custom Element <${TAG_NAME}> уже был зарегистрирован; повторная регистрация пропущена`);
+  function registerNagornevaReviewsMap(config = {}) {
+    widgetRuntimeConfig = config;
+    demoDoctorsCache = void 0;
+    if (!customElements.get(TAG_NAME)) {
+      customElements.define(TAG_NAME, NagornevaReviewsMap);
+    } else {
+      debugWarn(`Custom Element <${TAG_NAME}> уже был зарегистрирован; повторная регистрация пропущена`);
+    }
   }
-  exports.NagornevaReviewsMap = NagornevaReviewsMap;
-  Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-  return exports;
-})({});
+  registerNagornevaReviewsMap();
+})();
