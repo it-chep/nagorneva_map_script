@@ -83,6 +83,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-card > * { min-width: 0; max-width: 100%; }
   .nrw-card-head { display: flex; width: 100%; min-width: 0; max-width: 100%; margin-bottom: 17px; align-items: center; justify-content: space-between; gap: 12px; }
   .nrw-course { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 10px 15px; overflow: hidden; border-radius: 999px; background: rgba(223,228,233,.4); color: rgba(0,0,0,.7); font-size: 14px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; }
+  .nrw-course a { color: inherit; }
   .nrw-rating { display: flex; flex: 0 0 auto; align-items: center; gap: 2px; }
   .nrw-rating-star { display: block; width: 16px; height: 16px; color: rgba(157,174,192,.35); }
   .nrw-rating-star.is-filled { color: #9daec0; }
@@ -146,6 +147,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         comment: String(value.comment || ""),
         courseId: Number(value.courseId ?? value.course_id) || void 0,
         courseName: String(value.courseName ?? value.course_name ?? ""),
+        courseSiteLink: String(value.courseSiteLink ?? value.course_site_link ?? "").trim(),
         createdAt: String(value.createdAt ?? value.created_at ?? "")
       };
     }).filter((review) => review.comment.trim() || review.rating >= 1 && review.rating <= 5) : [];
@@ -690,7 +692,15 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           header.className = "nrw-card-head";
           const course = document.createElement("p");
           course.className = "nrw-course";
-          course.textContent = `Курс: ${review.courseName || "не указан"}`;
+          course.textContent = "Курс: ";
+          if (review.courseSiteLink) {
+            const courseLink = document.createElement("a");
+            courseLink.href = review.courseSiteLink;
+            courseLink.textContent = review.courseName || "не указан";
+            course.append(courseLink);
+          } else {
+            course.append(document.createTextNode(review.courseName || "не указан"));
+          }
           header.append(course);
           const rating = createRatingElement(review.rating);
           if (rating) header.append(rating);
