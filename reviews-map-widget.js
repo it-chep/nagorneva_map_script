@@ -46,9 +46,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return `${apiKey.slice(0, 4)}…${apiKey.slice(-4)}`;
   }
   const styles = String.raw`
-  nagorneva-reviews-map { display: block; width: 100%; color: #fff; font-family: Inter, Arial, sans-serif; }
+  nagorneva-reviews-map { display: block; width: 100%; color: #fff; font-family: "Montserrat", Arial, sans-serif; }
   nagorneva-reviews-map .nrw-shell,
-  nagorneva-reviews-map .nrw-shell * { box-sizing: border-box; }
+  nagorneva-reviews-map .nrw-shell * { box-sizing: border-box; font-family: "Montserrat", Arial, sans-serif; }
   nagorneva-reviews-map .nrw-shell button { font: inherit; }
   .nrw-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; overflow-anchor: none; background: #9daec0; }
   .nrw-map-wrap { position: relative; min-width: 0; min-height: 0; height: 100%; overflow: hidden; background: #dfe4e9; }
@@ -500,6 +500,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       (_c = (_b = this.map) == null ? void 0 : _b.destroy) == null ? void 0 : _c.call(_b);
     }
     renderShell() {
+      if (!document.getElementById("nrw-montserrat-font")) {
+        const fontLink = document.createElement("link");
+        fontLink.id = "nrw-montserrat-font";
+        fontLink.rel = "stylesheet";
+        fontLink.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap";
+        document.head.append(fontLink);
+      }
       this.root.innerHTML = `
       <style>${styles}</style>
       <section class="nrw-shell" aria-label="География наших учеников: реальные отзывы врачей">
