@@ -50,8 +50,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   nagorneva-reviews-map .nrw-shell,
   nagorneva-reviews-map .nrw-shell * { box-sizing: border-box; }
   nagorneva-reviews-map .nrw-shell button { font: inherit; }
-  .nrw-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; height: 683px; min-height: 683px; overflow-anchor: none; background: #9daec0; }
-  .nrw-map-wrap { position: relative; min-width: 0; min-height: 683px; overflow: hidden; background: #dfe4e9; }
+  .nrw-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; overflow-anchor: none; background: #9daec0; }
+  .nrw-map-wrap { position: relative; min-width: 0; min-height: 0; height: 100%; overflow: hidden; background: #dfe4e9; }
   .nrw-map { position: absolute; inset: 0; }
   .nrw-map .ymaps3--marker { pointer-events: none; }
   .nrw-map-loader { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -62,10 +62,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-map-placeholder[hidden] { display: none; }
   .nrw-map-placeholder::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(25deg, transparent 0 46px, rgba(255,255,255,.27) 47px 49px); }
   .nrw-map-placeholder span { position: relative; z-index: 1; max-width: 340px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,.86); }
-  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 683px; padding: 29px 40px 40px; overflow: hidden; flex-direction: column; }
+  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 100%; padding: 29px 40px 40px; overflow: hidden; flex-direction: column; }
   .nrw-title { margin: 0 0 23px; font-size: 32px; line-height: 1.2; font-weight: 600; }
-  .nrw-description { max-width: 831px; margin: 0; font-size: 20px; line-height: 1.3; }
-  .nrw-review-area { position: relative; min-height: 0; margin-top: 72px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
+  .nrw-title-mini { display: none; }
+  .nrw-description { max-width: 831px; margin: 0; font-size: 18px; line-height: 1.3; }
+  .nrw-description p { margin: 0 0 14px; }
+  .nrw-description p:last-child { margin-bottom: 0; }
+  .nrw-description-accent { font-weight: 600; }
+  .nrw-nowrap { white-space: nowrap; }
+  .nrw-description-mini { display: none; }
+  .nrw-panel.has-selection .nrw-title-full,
+  .nrw-panel.has-selection .nrw-description-full { display: none; }
+  .nrw-panel.has-selection .nrw-title-mini,
+  .nrw-panel.has-selection .nrw-description-mini { display: block; }
+  .nrw-review-area { position: relative; min-height: 0; margin-top: 32px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
   .nrw-review-area[hidden] { display: none; }
   .nrw-review-area.has-review-list { display: flex; flex-direction: column; gap: 12px; }
   .nrw-city { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 9px 15px; overflow: hidden; border: 1px solid rgba(157,174,192,.45); border-radius: 999px; color: #53697d; background: #cbd6df; box-shadow: 0 5px 12px rgba(91,110,128,.16); font-size: 14px; line-height: 1.3; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; flex: 0 0 auto; }
@@ -77,11 +87,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   @supports not selector(::-webkit-scrollbar) {
     .nrw-review-list { scrollbar-color: #9daec0 rgba(157,174,192,.22); scrollbar-width: thin; }
   }
-  .nrw-card { width: 100%; min-width: 0; max-width: 100%; height: fit-content; min-height: 280px; padding: 19px 20px 16px; border: 1px solid rgba(181,195,208,.5); border-radius: 15px; color: #111; background: #fff; flex-shrink: 0; }
+  .nrw-card { width: 100%; min-width: 0; max-width: 100%; height: fit-content; min-height: 0; padding: 14px 16px; border: 1px solid rgba(181,195,208,.5); border-radius: 15px; color: #111; background: #fff; flex-shrink: 0; }
+  .nrw-card.is-collapsible { cursor: pointer; }
+  .nrw-card.is-collapsible:focus-visible { outline: 3px solid rgba(83,105,125,.75); outline-offset: 2px; }
   .nrw-card.is-without-review { width: 100%; height: fit-content; min-height: 0; max-width: 100%; padding: 16px 18px; align-self: stretch; border: 0; background: rgba(255,255,255,.72); }
   .nrw-card.is-without-review .nrw-comment { margin-bottom: 0; }
   .nrw-card > * { min-width: 0; max-width: 100%; }
-  .nrw-card-head { display: flex; width: 100%; min-width: 0; max-width: 100%; margin-bottom: 17px; align-items: center; justify-content: space-between; gap: 12px; }
+  .nrw-card-head { display: flex; width: 100%; min-width: 0; max-width: 100%; margin-bottom: 10px; align-items: center; justify-content: space-between; gap: 12px; }
   .nrw-course { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 10px 15px; overflow: hidden; border-radius: 999px; background: rgba(223,228,233,.4); color: rgba(0,0,0,.7); font-size: 14px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; }
   .nrw-rating { display: flex; flex: 0 0 auto; align-items: center; gap: 2px; }
   .nrw-rating-star { display: block; width: 16px; height: 16px; color: rgba(157,174,192,.35); }
@@ -89,10 +101,15 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-rating-star svg { display: block; width: 100%; height: 100%; }
   .nrw-rating-star path { fill: transparent; stroke: currentColor; }
   .nrw-rating-star.is-filled path { fill: currentColor; }
-  .nrw-comment { margin: 0 0 12px; overflow-wrap: anywhere; font-size: 16px; line-height: 1.3; white-space: pre-line; }
+  .nrw-comment-wrap { position: relative; min-height: 0; margin-bottom: 12px; overflow: hidden; font-size: 16px; line-height: 1.3; transition: max-height .5s cubic-bezier(.22, 1, .36, 1), margin-bottom .5s cubic-bezier(.22, 1, .36, 1); }
+  .nrw-comment-wrap::after { content: '…'; position: absolute; right: 0; bottom: 0; padding-left: 24px; opacity: 0; color: #111; background: linear-gradient(90deg, rgba(255,255,255,0), #fff 45%); pointer-events: none; transition: opacity .18s ease; }
+  .nrw-card.is-collapsed .nrw-comment-wrap { max-height: 1.3em; margin-bottom: 8px; }
+  .nrw-card.is-collapsed .nrw-comment-wrap::after { opacity: 1; }
+  .nrw-comment { margin: 0; overflow-wrap: anywhere; font-size: inherit; line-height: inherit; white-space: pre-line; }
   .nrw-comment.is-empty { color: rgba(0,0,0,.5); font-style: italic; }
-  .nrw-training-note { color: rgba(0,0,0,.5); }
-  .nrw-author { margin: 0; overflow-wrap: anywhere; color: rgba(0,0,0,.5); font-size: 16px; line-height: 1.3; }
+  .nrw-card-footer { display: flex; min-width: 0; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .nrw-author { min-width: 0; margin: 0; overflow-wrap: anywhere; color: rgba(0,0,0,.5); font-size: 16px; line-height: 1.3; }
+  .nrw-review-action { padding: 0; border: 0; color: #6d8295; background: transparent; font-size: 13px; line-height: 1.3; font-weight: 500; white-space: nowrap; cursor: pointer; flex: 0 0 auto; }
   .nrw-status { display: flex; align-items: center; justify-content: center; min-height: 280px; padding: 30px; border-radius: 15px; color: #65717d; text-align: center; background: #fff; }
   .nrw-retry { margin-left: 10px; padding: 8px 13px; border: 0; border-radius: 999px; color: #fff; background: #9daec0; cursor: pointer; }
   .nrw-marker { position: relative; width: 62px; height: 69px; padding: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; transform: translate(-50%, -100%); filter: drop-shadow(0 3px 4px rgba(70,85,100,.28)); }
@@ -105,22 +122,42 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-cluster { display: grid; width: 54px; height: 54px; padding: 0; place-items: center; border: 6px solid #fff; border-radius: 50%; color: #fff; background: #9eafc0; box-shadow: 0 3px 8px rgba(70,85,100,.28); font-size: 18px; line-height: 1; font-weight: 700; cursor: pointer; pointer-events: auto; transform: translate(-50%, -50%); transition: transform .18s ease, background-color .18s ease; }
   .nrw-cluster:hover { background: #91a5b8; transform: translate(-50%, -50%) scale(1.06); }
   .nrw-cluster:focus-visible { outline: 3px solid #1b66a9; outline-offset: 3px; }
+  @media (min-width: 768px) and (max-height: 900px) {
+    .nrw-panel { padding: 24px 32px 28px; }
+    .nrw-title { margin-bottom: 14px; }
+    .nrw-description p { margin-bottom: 9px; }
+    .nrw-review-area { margin-top: 20px; }
+  }
+  @media (min-width: 768px) and (max-height: 700px) {
+    .nrw-panel { padding: 18px 26px 22px; overflow-y: auto; }
+    .nrw-title { margin-bottom: 10px; }
+    .nrw-description p { margin-bottom: 6px; }
+    .nrw-review-area { min-height: 220px; margin-top: 12px; flex: 1 1 auto; }
+  }
+  @media (min-width: 768px) and (max-height: 550px) {
+    .nrw-description { font-size: 16px; }
+  }
   @media (max-width: 767px) {
-    .nrw-shell { display: block; height: auto; min-height: 0; }
-    .nrw-map-wrap { min-height: 331px; }
-    .nrw-panel { display: block; height: auto; min-height: 0; padding: 26px 20px 17px; overflow: visible; }
-    .nrw-title { margin-bottom: 18px; font-size: 22px; white-space: nowrap; }
-    .nrw-description { font-size: 15px; }
-    .nrw-review-area { min-height: 412px; margin: 21px -20px 0; padding: 15px; }
+    .nrw-shell { display: flex; height: auto; min-height: 0; flex-direction: column; }
+    .nrw-map-wrap { order: 3; height: 400px; min-height: 400px; }
+    .nrw-panel { display: contents; }
+    .nrw-panel.has-selection .nrw-title-full,
+    .nrw-panel.has-selection .nrw-description-full { display: block; }
+    .nrw-panel.has-selection .nrw-title-mini,
+    .nrw-panel.has-selection .nrw-description-mini { display: none; }
+    .nrw-title { order: 1; margin: 26px 20px 18px; font-size: 22px; white-space: normal; }
+    .nrw-description { order: 2; max-width: none; margin: 0 0 21px; padding: 0 20px; font-size: 16px; }
+    .nrw-review-area { order: 4; width: 100%; min-height: 412px; margin: 0 0 17px; padding: 15px; }
     .nrw-review-area.has-review-list { height: 412px; }
     .nrw-review-list { height: 100%; max-height: none; margin: 0; padding-right: 4px; overflow-x: hidden; overflow-y: auto; }
     .nrw-city { padding: 8px 13px; font-size: 12px; }
-    .nrw-card { min-height: 379px; padding: 19px; }
+    .nrw-card { min-height: 0; padding: 14px 15px; }
     .nrw-course { margin-bottom: 17px; font-size: 12px; }
     .nrw-card-head { margin-bottom: 17px; align-items: flex-start; flex-direction: column; gap: 10px; }
     .nrw-card-head .nrw-course { margin-bottom: 0; }
     .nrw-rating-star { width: 14px; height: 14px; }
-    .nrw-comment, .nrw-author { font-size: 14px; }
+    .nrw-comment-wrap, .nrw-card.is-without-review .nrw-comment, .nrw-author { font-size: 14px; }
+    .nrw-review-action { font-size: 10px; }
     .nrw-status { min-height: 380px; }
     .nrw-marker { transform: translate(-50%, -100%) scale(.83); }
   }
@@ -146,9 +183,18 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         comment: String(value.comment || ""),
         courseId: Number(value.courseId ?? value.course_id) || void 0,
         courseName: String(value.courseName ?? value.course_name ?? ""),
+        courseSiteLink: String(value.courseSiteLink ?? value.course_site_link ?? ""),
         createdAt: String(value.createdAt ?? value.created_at ?? "")
       };
     }).filter((review) => review.comment.trim() || review.rating >= 1 && review.rating <= 5) : [];
+    const courses = Array.isArray(raw.courses) ? raw.courses.map((item) => {
+      const value = item;
+      return {
+        id: Number(value.id) || 0,
+        name: String(value.name || ""),
+        siteLink: String(value.siteLink ?? value.site_link ?? "")
+      };
+    }).filter((course) => course.id > 0 || course.name.trim()) : [];
     return {
       id: Number(raw.id) || 0,
       name: String(raw.name || ""),
@@ -156,7 +202,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       city: String(raw.city || ""),
       lat,
       lon,
-      reviews
+      reviews,
+      courses
     };
   }
   let demoDoctorsCache;
@@ -166,21 +213,47 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     demoDoctorsCache = doctors;
     return doctors;
   }
-  function createRatingElement(rawRating) {
+  function createRatingElement(rawRating, showEmpty = false) {
     const rating = Math.round(rawRating);
-    if (rating < 1 || rating > 5) return null;
+    if ((rating < 1 || rating > 5) && !showEmpty) return null;
+    const normalizedRating = rating >= 1 && rating <= 5 ? rating : 0;
     const element = document.createElement("div");
     element.className = "nrw-rating";
     element.setAttribute("role", "img");
-    element.setAttribute("aria-label", `Оценка: ${rating} из 5`);
-    element.title = `Оценка: ${rating} из 5`;
+    const label = normalizedRating > 0 ? `Оценка: ${normalizedRating} из 5` : "Оценка не поставлена";
+    element.setAttribute("aria-label", label);
+    element.title = label;
     for (let value = 1; value <= 5; value += 1) {
       const star = document.createElement("span");
-      star.className = `nrw-rating-star${value <= rating ? " is-filled" : ""}`;
+      star.className = `nrw-rating-star${value <= normalizedRating ? " is-filled" : ""}`;
       star.innerHTML = RATING_STAR_SVG;
       element.append(star);
     }
     return element;
+  }
+  function setReviewCardExpanded(card, expanded) {
+    const comment = card.querySelector(".nrw-comment");
+    const commentWrap = card.querySelector(".nrw-comment-wrap");
+    if (!comment || !commentWrap) return;
+    const computedStyle = window.getComputedStyle(comment);
+    const fontSize = Number.parseFloat(computedStyle.fontSize) || 16;
+    const parsedLineHeight = Number.parseFloat(computedStyle.lineHeight);
+    const collapsedHeight = Number.isFinite(parsedLineHeight) ? parsedLineHeight : fontSize * 1.3;
+    const targetHeight = expanded ? comment.scrollHeight : collapsedHeight;
+    card.classList.toggle("is-expanded", expanded);
+    card.classList.toggle("is-collapsed", !expanded);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      commentWrap.style.transition = "none";
+      commentWrap.style.maxHeight = `${targetHeight}px`;
+      window.requestAnimationFrame(() => commentWrap.style.removeProperty("transition"));
+    } else {
+      commentWrap.style.maxHeight = `${targetHeight}px`;
+    }
+    const action = card.querySelector(".nrw-review-action");
+    if (action) {
+      action.setAttribute("aria-expanded", String(expanded));
+      action.textContent = expanded ? "Свернуть ↑" : "Развернуть ↓";
+    }
   }
   function groupDoctors(doctors) {
     const groups = /* @__PURE__ */ new Map();
@@ -198,8 +271,23 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   function groupReviewCount(group) {
     return group.doctors.reduce((sum, doctor) => sum + doctor.reviews.length, 0);
   }
+  function doctorCardItems(doctor) {
+    const items = doctor.reviews.map((review) => ({
+      doctor,
+      review,
+      course: null
+    }));
+    const reviewedCourseIds = new Set(doctor.reviews.map((review) => review.courseId).filter((courseId) => Boolean(courseId)));
+    const reviewedCourseNames = new Set(doctor.reviews.map((review) => review.courseName.trim().toLocaleLowerCase("ru-RU")).filter(Boolean));
+    doctor.courses.forEach((course) => {
+      const hasReview = course.id > 0 && reviewedCourseIds.has(course.id) || reviewedCourseNames.has(course.name.trim().toLocaleLowerCase("ru-RU"));
+      if (!hasReview) items.push({ doctor, review: null, course });
+    });
+    if (items.length === 0) items.push({ doctor, review: null, course: null });
+    return items;
+  }
   function groupCardCount(group) {
-    return group.doctors.reduce((sum, doctor) => sum + Math.max(doctor.reviews.length, 1), 0);
+    return group.doctors.reduce((sum, doctor) => sum + doctorCardItems(doctor).length, 0);
   }
   function groupsToFeatures(groups) {
     return groups.map((group, index) => ({
@@ -366,7 +454,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     renderShell() {
       this.root.innerHTML = `
       <style>${styles}</style>
-      <section class="nrw-shell" aria-label="Интерактивная карта с отзывами">
+      <section class="nrw-shell" aria-label="География наших учеников: реальные отзывы врачей">
         <div class="nrw-map-wrap">
           <div class="nrw-map" part="map"></div>
           <section class="nrw-map-loader" hidden role="status" aria-label="Загрузка данных карты">
@@ -375,8 +463,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           <div class="nrw-map-placeholder"><span>Карта загружается…</span></div>
         </div>
         <div class="nrw-panel">
-          <h2 class="nrw-title">Интерактивная карта с отзывами</h2>
-          <p class="nrw-description">Здесь можно выбрать специалиста на карте и прочитать отзыв о пройденном обучении. Наши ученики работают в разных городах — убедитесь сами.</p>
+          <h2 class="nrw-title nrw-title-full">География наших учеников: реальные отзывы врачей</h2>
+          <h2 class="nrw-title nrw-title-mini">Отзывы наших учеников</h2>
+          <div class="nrw-description nrw-description-full">
+            <p>Лучше всего о качестве обучения расскажет тот, кто прошел уже этот путь!</p>
+            <p>Наши ученики работают в разных городах России и за ее пределами, но их объединяет стремление развиваться в профессии и совершенствовать свои навыки ультразвуковой диагностики.</p>
+            <p>На интерактивной карте вы можете увидеть, где работают врачи, прошедшие обучение в нашей ШКОЛЕ, познакомиться с их отзывами и узнать, какие впечатления и результаты они получили от обучения.</p>
+            <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
+            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!♥️</span></p>
+          </div>
+          <div class="nrw-description nrw-description-mini">
+            <p>Реальные отзывы врачей, прошедших обучение в нашей ШКОЛЕ.</p>
+            <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
+            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!♥️</span></p>
+          </div>
           <div class="nrw-review-area" hidden aria-live="polite"></div>
         </div>
       </section>`;
@@ -652,17 +752,15 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       debugInfo(`Виджет #${this.debugId}: приближаем кластер`);
     }
     selectGroup(group) {
-      const items = group.doctors.flatMap((doctor) => doctor.reviews.length > 0 ? doctor.reviews.map((review) => ({ doctor, review })) : [{ doctor, review: null }]);
+      const items = group.doctors.flatMap(doctorCardItems);
       const area = this.root.querySelector(".nrw-review-area");
+      const panel = this.root.querySelector(".nrw-panel");
       this.selectedGroup = group;
       this.selectedGroupKey = markerGroupKey(group);
+      panel.classList.add("has-selection");
       area.classList.add("has-review-list");
       if (!items.length) {
-        const cities2 = [...new Set(group.doctors.map((doctor) => doctor.city).filter(Boolean))];
-        const names = group.doctors.map((doctor) => doctor.name).filter(Boolean);
-        const place = cities2.length === 1 ? `, город ${cities2[0]}` : "";
-        const message = names.length === 1 ? `${names[0]}${place} — проходила обучение у Станиславы Нагорневой` : `Специалисты${cities2.length === 1 ? ` из города ${cities2[0]}` : ""} проходили обучение у Станиславы Нагорневой`;
-        this.showStatus(message);
+        this.showStatus("Нет данных о пройденных курсах");
         return;
       }
       area.hidden = false;
@@ -675,16 +773,17 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (cities.length) {
         const city = document.createElement("p");
         city.className = "nrw-city";
-        city.textContent = cities.length === 1 ? `Город: ${cities[0]}` : `Города: ${cities.join(", ")}`;
+        city.textContent = cities.map((name) => `г. ${name}`).join(", ");
         area.append(city);
       }
-      items.forEach(({ doctor, review }) => {
+      items.forEach(({ doctor, review, course: completedCourse }) => {
         const card = document.createElement("article");
         card.className = "nrw-card";
         card.setAttribute("role", "listitem");
         const comment = document.createElement("p");
         comment.className = "nrw-comment";
         const authorText = doctor.name;
+        let isCollapsible = false;
         if (review) {
           const header = document.createElement("div");
           header.className = "nrw-card-head";
@@ -697,17 +796,26 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           card.append(header);
           if (review.comment.trim()) {
             comment.textContent = review.comment;
+            isCollapsible = true;
           } else {
             comment.classList.add("is-empty");
             comment.textContent = "Текст отзыва не оставлен.";
           }
+        } else if (completedCourse) {
+          card.classList.add("is-without-review");
+          const header = document.createElement("div");
+          header.className = "nrw-card-head";
+          const course = document.createElement("p");
+          course.className = "nrw-course";
+          course.textContent = `Курс: ${completedCourse.name || "не указан"}`;
+          header.append(course, createRatingElement(0, true));
+          comment.textContent = authorText;
+          card.append(header, comment);
+          list.append(card);
+          return;
         } else {
           card.classList.add("is-without-review");
-          comment.append(document.createTextNode(authorText));
-          const trainingNote = document.createElement("span");
-          trainingNote.className = "nrw-training-note";
-          trainingNote.textContent = " — проходила обучение у Станиславы Нагорневой";
-          comment.append(trainingNote);
+          comment.textContent = authorText;
           card.append(comment);
           list.append(card);
           return;
@@ -715,7 +823,51 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         const author = document.createElement("p");
         author.className = "nrw-author";
         author.textContent = authorText;
-        card.append(comment, author);
+        const footer = document.createElement("div");
+        footer.className = "nrw-card-footer";
+        footer.append(author);
+        const commentWrap = document.createElement("div");
+        commentWrap.className = "nrw-comment-wrap";
+        commentWrap.append(comment);
+        if (isCollapsible) {
+          card.classList.add("is-collapsible", "is-collapsed");
+          const action = document.createElement("button");
+          action.type = "button";
+          action.className = "nrw-review-action";
+          action.setAttribute("aria-expanded", "false");
+          action.textContent = "Развернуть ↓";
+          footer.append(action);
+          const toggle = () => {
+            const shouldExpand = !card.classList.contains("is-expanded");
+            list.querySelectorAll(".nrw-card.is-expanded").forEach((expandedCard) => {
+              if (expandedCard !== card) setReviewCardExpanded(expandedCard, false);
+            });
+            setReviewCardExpanded(card, shouldExpand);
+          };
+          action.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggle();
+          });
+          card.addEventListener("click", (event) => {
+            if (!card.classList.contains("is-collapsible")) return;
+            if (event.target instanceof Element && event.target.closest(".nrw-review-action")) return;
+            const selection = window.getSelection();
+            if (selection && !selection.isCollapsed) return;
+            toggle();
+          });
+          window.requestAnimationFrame(() => {
+            if (!card.isConnected) return;
+            const collapsedHeight = commentWrap.clientHeight;
+            if (comment.scrollHeight > collapsedHeight + 1) {
+              commentWrap.style.maxHeight = `${collapsedHeight}px`;
+              return;
+            }
+            card.classList.remove("is-collapsible", "is-collapsed");
+            commentWrap.style.removeProperty("max-height");
+            action.remove();
+          });
+        }
+        card.append(commentWrap, footer);
         list.append(card);
       });
       const scroll = document.createElement("div");
@@ -741,8 +893,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     hideReviewArea() {
       const area = this.root.querySelector(".nrw-review-area");
+      const panel = this.root.querySelector(".nrw-panel");
       this.selectedGroup = void 0;
       this.selectedGroupKey = "";
+      panel.classList.remove("has-selection");
       area.classList.remove("has-review-list");
       area.hidden = true;
       area.innerHTML = "";
@@ -753,6 +907,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     showError(message) {
       const area = this.root.querySelector(".nrw-review-area");
+      const panel = this.root.querySelector(".nrw-panel");
+      panel.classList.remove("has-selection");
       area.classList.remove("has-review-list");
       area.hidden = false;
       area.innerHTML = "";
