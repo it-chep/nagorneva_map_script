@@ -90,9 +90,24 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-card { width: 100%; min-width: 0; max-width: 100%; height: fit-content; min-height: 0; padding: 14px 16px; border: 1px solid rgba(181,195,208,.5); border-radius: 15px; color: #111; background: #fff; flex-shrink: 0; }
   .nrw-card.is-collapsible { cursor: pointer; }
   .nrw-card.is-collapsible:focus-visible { outline: 3px solid rgba(83,105,125,.75); outline-offset: 2px; }
-  .nrw-card.is-without-review { width: 100%; height: fit-content; min-height: 0; max-width: 100%; padding: 16px 18px; align-self: stretch; border: 0; background: rgba(255,255,255,.72); }
+  .nrw-card.is-without-review, .nrw-card.is-with-review { width: 100%; height: fit-content; min-height: 0; max-width: 100%; padding: 16px 18px; align-self: stretch; border: 0; background: rgba(255,255,255,.72); }
+  .nrw-card.is-with-review .nrw-card-footer { margin-bottom: 12px; }
+  .nrw-card.is-with-review .nrw-comment-wrap::after { background: linear-gradient(90deg, transparent, #f6f7f9 45%); }
   .nrw-card.is-without-review .nrw-comment { margin-bottom: 0; }
+  .nrw-completed-doctor { margin: 0 0 12px; overflow-wrap: anywhere; color: #111; font-size: 16px; line-height: 1.3; font-weight: 600; }
+  .nrw-completed-title { margin: 0 0 8px; color: rgba(0,0,0,.5); font-size: 14px; line-height: 1.3; }
+  .nrw-completed-courses { display: flex; margin: 0; padding: 0; gap: 8px; list-style: none; flex-direction: column; }
+  .nrw-completed-course { display: flex; min-width: 0; padding: 9px 12px; border-radius: 10px; align-items: center; gap: 10px; background: rgba(223,228,233,.58); }
+  .nrw-completed-course-name { display: block; min-width: 0; color: #53697d; font-size: 14px; line-height: 1.3; overflow-wrap: anywhere; flex: 1 1 auto; }
+  a.nrw-completed-course-name { text-decoration: underline; text-decoration-color: rgba(83,105,125,.45); text-underline-offset: 2px; transition: color .18s ease; }
+  a.nrw-completed-course-name:hover { color: #344d63; }
+  a.nrw-completed-course-name:focus-visible { outline: 3px solid rgba(83,105,125,.6); outline-offset: 2px; }
+  .nrw-completed-course .nrw-rating { flex: 0 0 auto; }
   .nrw-card > * { min-width: 0; max-width: 100%; }
+  .nrw-review-entry + .nrw-review-entry { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(157,174,192,.3); }
+  .nrw-review-entry.is-collapsible { cursor: pointer; }
+  .nrw-review-entry.is-collapsed .nrw-comment-wrap { max-height: 1.3em; margin-bottom: 8px; }
+  .nrw-review-entry.is-collapsed .nrw-comment-wrap::after { opacity: 1; }
   .nrw-card-head { display: flex; width: 100%; min-width: 0; max-width: 100%; margin-bottom: 10px; align-items: center; justify-content: space-between; gap: 12px; }
   .nrw-course { display: block; width: max-content; min-width: 0; max-width: 100%; margin: 0; padding: 10px 15px; overflow: hidden; border-radius: 999px; background: rgba(223,228,233,.4); color: rgba(0,0,0,.7); font-size: 14px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; }
   .nrw-course a { color: inherit; }
@@ -157,6 +172,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-card-head { margin-bottom: 17px; align-items: flex-start; flex-direction: column; gap: 10px; }
     .nrw-card-head .nrw-course { margin-bottom: 0; }
     .nrw-rating-star { width: 14px; height: 14px; }
+    .nrw-completed-doctor { font-size: 14px; }
+    .nrw-completed-title, .nrw-completed-course-name { font-size: 12px; }
     .nrw-comment-wrap, .nrw-card.is-without-review .nrw-comment, .nrw-author { font-size: 14px; }
     .nrw-review-action { font-size: 10px; }
     .nrw-status { min-height: 380px; }
@@ -171,6 +188,35 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     if (raw === null || raw.trim() === "") return fallback;
     const parsed = Number(raw);
     return Number.isFinite(parsed) ? parsed : fallback;
+  }
+  function reviewDisplayText(review) {
+    const text = review.comment.trim();
+    const normalize = (value) => value.toLocaleLowerCase("ru-RU").replace(/ё/g, "е").replace(/[—–]/g, "-").replace(/\s+/g, " ").trim();
+    const courseName = normalize(review.courseName);
+    if (!courseName) return text;
+    // Imported comments can begin with a course heading. Remove only recognized
+    // headings; a colon in the review itself must not discard the author's words.
+    const aliases = [
+      [/контрастная.*гистеросальпингография/, ["КУЗ ГСС"]],
+      [/тазового дна/, ["УЗД тазового дна"]],
+      [/рубца на матке/, ["УЗ оценка рубца на матке"]],
+      [/диагностика во 2 и 3 триместре/, ["2-3 скрининг", "2-3 триместр", "2-3 трим"]],
+      [/^допплерометрия в акушерстве/, ["Допплер", "Допплерометрия", "Допплеромертия"]],
+      [/^1 скрининг/, ["1 скрининг"]],
+      [/^фетометрия \+ допплерометрия/, ["Фето и допплер"]],
+      [/^эхокардиография:.*продвинутый/, ["ЭХО КГ продвин", "ЭХО КГ продвинутый"]],
+      [/^беременность раннего срока/, ["Берем раннего срока"]],
+      [/^скрининг сердца плода во 2 и 3/, ["ЭХО КГ 2-3 триместр", "ЭХОКГ 2-3 триместр", "ЭХО КГ 2-3 трим"]],
+      [/диагностика в гинекологии/, ["УЗД в гинекологии"]],
+      [/диагностика молочных желез/, ["УЗД м.Ж."]]
+    ];
+    const headings = [courseName, ...aliases.filter(([pattern]) => pattern.test(courseName)).flatMap(([, names]) => names.map(normalize))];
+    for (let index = 0; index < text.length; index += 1) {
+      if (text[index] !== ":" && text[index] !== "\n") continue;
+      const heading = normalize(text.slice(0, index)).replace(/^(?:название курса|курс)\s*:\s*/, "");
+      if (headings.includes(heading)) return text.slice(index + 1).replace(/^\s*:\s*/, "").trimStart();
+    }
+    return text;
   }
   function normalizeDoctor(raw) {
     const lat = Number(raw.lat);
@@ -276,19 +322,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     const items = doctor.reviews.map((review) => ({
       doctor,
       review,
-      course: null
+      courses: []
     }));
     const reviewedCourseIds = new Set(doctor.reviews.map((review) => review.courseId).filter((courseId) => Boolean(courseId)));
     const reviewedCourseNames = new Set(doctor.reviews.map((review) => review.courseName.trim().toLocaleLowerCase("ru-RU")).filter(Boolean));
-    doctor.courses.forEach((course) => {
+    const coursesWithoutReviews = doctor.courses.filter((course) => {
       const hasReview = course.id > 0 && reviewedCourseIds.has(course.id) || reviewedCourseNames.has(course.name.trim().toLocaleLowerCase("ru-RU"));
-      if (!hasReview) items.push({ doctor, review: null, course });
+      return !hasReview;
     });
-    if (items.length === 0) items.push({ doctor, review: null, course: null });
+    if (coursesWithoutReviews.length > 0) items.push({ doctor, review: null, courses: coursesWithoutReviews });
+    if (items.length === 0) items.push({ doctor, review: null, courses: [] });
     return items;
   }
   function groupCardCount(group) {
-    return group.doctors.reduce((sum, doctor) => sum + doctorCardItems(doctor).length, 0);
+    return group.doctors.length;
   }
   function groupsToFeatures(groups) {
     return groups.map((group, index) => ({
@@ -769,7 +816,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       const list = document.createElement("div");
       list.className = "nrw-review-list";
       list.setAttribute("role", "list");
-      list.setAttribute("aria-label", `Карточки специалистов и отзывов: ${items.length}`);
+      list.setAttribute("aria-label", `Карточки специалистов: ${group.doctors.length}`);
       const cities = [...new Set(group.doctors.map((doctor) => doctor.city.trim()).filter(Boolean))];
       if (cities.length) {
         const city = document.createElement("p");
@@ -777,64 +824,70 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         city.textContent = cities.map((name) => `г. ${name}`).join(", ");
         area.append(city);
       }
-      items.forEach(({ doctor, review, course: completedCourse }) => {
-        const card = document.createElement("article");
-        card.className = "nrw-card";
-        card.setAttribute("role", "listitem");
+      group.doctors.forEach((doctor) => {
+        const doctorCard = document.createElement("article");
+        doctorCard.className = `nrw-card ${doctor.reviews.length ? "is-with-review" : "is-without-review"}`;
+        doctorCard.setAttribute("role", "listitem");
+        const author = document.createElement("p");
+        author.className = "nrw-completed-doctor";
+        author.textContent = doctor.name;
+        doctorCard.append(author);
+        list.append(doctorCard);
+        doctorCardItems(doctor).forEach(({ review, courses: completedCourses }) => {
+        const card = document.createElement("div");
+        card.className = "nrw-review-entry";
         const comment = document.createElement("p");
         comment.className = "nrw-comment";
         const authorText = doctor.name;
         let isCollapsible = false;
         if (review) {
-          const header = document.createElement("div");
-          header.className = "nrw-card-head";
-          const course = document.createElement("p");
-          course.className = "nrw-course";
-          course.textContent = "Курс: ";
-          if (review.courseSiteLink) {
-            const courseLink = document.createElement("a");
-            courseLink.href = review.courseSiteLink;
-            courseLink.textContent = review.courseName || "не указан";
-            course.append(courseLink);
-          } else {
-            course.append(document.createTextNode(review.courseName || "не указан"));
-          }
-          header.append(course);
-          const rating = createRatingElement(review.rating);
-          if (rating) header.append(rating);
-          card.append(header);
-          if (review.comment.trim()) {
-            comment.textContent = review.comment;
+          card.classList.add("is-with-review");
+          const displayText = reviewDisplayText(review);
+          if (displayText) {
+            comment.textContent = displayText;
             isCollapsible = true;
           } else {
             comment.classList.add("is-empty");
             comment.textContent = "Текст отзыва не оставлен.";
           }
-        } else if (completedCourse) {
+        } else if (completedCourses.length > 0) {
           card.classList.add("is-without-review");
-          const header = document.createElement("div");
-          header.className = "nrw-card-head";
-          const course = document.createElement("p");
-          course.className = "nrw-course";
-          course.textContent = `Курс: ${completedCourse.name || "не указан"}`;
-          header.append(course, createRatingElement(0, true));
-          comment.textContent = authorText;
-          card.append(header, comment);
-          list.append(card);
+          const title = document.createElement("p");
+          title.className = "nrw-completed-title";
+          title.textContent = doctor.reviews.length > 0 ? "Также пройденные курсы:" : "Пройденные курсы:";
+          const courses = document.createElement("ul");
+          courses.className = "nrw-completed-courses";
+          completedCourses.forEach((completedCourse) => {
+            const item = document.createElement("li");
+            item.className = "nrw-completed-course";
+            const courseName = completedCourse.name || "Курс не указан";
+            if (completedCourse.siteLink) {
+              const link = document.createElement("a");
+              link.className = "nrw-completed-course-name";
+              link.href = completedCourse.siteLink;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              link.textContent = courseName;
+              item.append(link);
+            } else {
+              const text = document.createElement("span");
+              text.className = "nrw-completed-course-name";
+              text.textContent = courseName;
+              item.append(text);
+            }
+            item.append(createRatingElement(5));
+            courses.append(item);
+          });
+          card.append(title, courses);
+          doctorCard.append(card);
           return;
         } else {
-          card.classList.add("is-without-review");
-          comment.textContent = authorText;
-          card.append(comment);
-          list.append(card);
           return;
         }
-        const author = document.createElement("p");
-        author.className = "nrw-author";
-        author.textContent = authorText;
         const footer = document.createElement("div");
         footer.className = "nrw-card-footer";
-        footer.append(author);
+        const rating = createRatingElement(review.rating);
+        if (rating) footer.append(rating);
         const commentWrap = document.createElement("div");
         commentWrap.className = "nrw-comment-wrap";
         commentWrap.append(comment);
@@ -848,7 +901,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           footer.append(action);
           const toggle = () => {
             const shouldExpand = !card.classList.contains("is-expanded");
-            list.querySelectorAll(".nrw-card.is-expanded").forEach((expandedCard) => {
+            list.querySelectorAll(".nrw-review-entry.is-expanded").forEach((expandedCard) => {
               if (expandedCard !== card) setReviewCardExpanded(expandedCard, false);
             });
             setReviewCardExpanded(card, shouldExpand);
@@ -859,7 +912,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           });
           card.addEventListener("click", (event) => {
             if (!card.classList.contains("is-collapsible")) return;
-            if (event.target instanceof Element && event.target.closest(".nrw-review-action")) return;
+            if (event.target instanceof Element && event.target.closest("button, a")) return;
             const selection = window.getSelection();
             if (selection && !selection.isCollapsed) return;
             toggle();
@@ -877,7 +930,23 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           });
         }
         card.append(commentWrap, footer);
-        list.append(card);
+        const courseTitle = document.createElement("p");
+        courseTitle.className = "nrw-completed-title";
+        courseTitle.textContent = "Пройденный курс:";
+        const course = document.createElement("div");
+        course.className = "nrw-completed-course";
+        const courseName = document.createElement(review.courseSiteLink ? "a" : "span");
+        courseName.className = "nrw-completed-course-name";
+        courseName.textContent = review.courseName || "Курс не указан";
+        if (review.courseSiteLink) {
+          courseName.href = review.courseSiteLink;
+          courseName.target = "_blank";
+          courseName.rel = "noopener noreferrer";
+        }
+        course.append(courseName);
+        card.append(courseTitle, course);
+        doctorCard.append(card);
+        });
       });
       const scroll = document.createElement("div");
       scroll.className = "nrw-review-scroll";
@@ -885,7 +954,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       area.append(scroll);
       list.scrollTop = 0;
       debugInfo(`Виджет #${this.debugId}: открыт список отзывов`, {
-        cards: items.length,
+        cards: group.doctors.length,
         reviews: groupReviewCount(group),
         doctors: group.doctors.length
       });
