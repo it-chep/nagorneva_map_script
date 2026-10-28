@@ -679,7 +679,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this.ymaps = ymaps;
         const center = [numberAttribute(this, "center-lon", DEFAULT_CENTER[0]), numberAttribute(this, "center-lat", DEFAULT_CENTER[1])];
         // Keep the Urals centered and adapt the starting zoom to the map size.
-        const defaultZoom = 1 + Math.max(0, Math.min(2.5,
+        const defaultZoom = (window.matchMedia("(max-width: 767px)").matches ? 1 : 0) + Math.max(0, Math.min(2.5,
           Math.log2((mapElement.clientWidth || 360) / (256 * 260 / 360)),
           Math.log2((mapElement.clientHeight || 400) / (256 * 0.5))
         ));
