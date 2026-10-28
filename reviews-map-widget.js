@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
 (function() {
   "use strict";
   const TAG_NAME = "nagorneva-reviews-map";
-  const DEFAULT_CENTER = [52, 57.3];
+  const DEFAULT_CENTER = [60, 62];
   const YANDEX_READY_TIMEOUT_MS = 2e4;
   const YANDEX_SCRIPT_TIMEOUT_MS = 2e4;
   const MARKER_SOURCE_ID = "nagorneva-reviews-markers";
@@ -525,12 +525,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             <p>Наши ученики работают в разных городах России и за ее пределами, но их объединяет стремление развиваться в профессии и совершенствовать свои навыки ультразвуковой диагностики.</p>
             <p>На интерактивной карте вы можете увидеть, где работают врачи, прошедшие обучение в нашей ШКОЛЕ, познакомиться с их отзывами и узнать, какие впечатления и результаты они получили от обучения.</p>
             <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
-            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!♥️</span></p>
+            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!️</span></p>
           </div>
           <div class="nrw-description nrw-description-mini">
             <p>Реальные отзывы врачей, прошедших обучение в нашей ШКОЛЕ.</p>
             <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
-            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!♥️</span></p>
+            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!️</span></p>
           </div>
           <div class="nrw-review-area" hidden aria-live="polite"></div>
         </div>
@@ -563,29 +563,37 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       }
     }
     async fetchDoctors(center, radiusKm) {
-      var _a;
       if (this.isDemo) {
         return getDemoDoctors().filter((doctor) => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
       }
       const apiUrl = (this.getAttribute("api-url") || "").replace(/\/$/, "");
       if (!apiUrl) throw new Error("Для виджета не указан api-url");
-      (_a = this.abort) == null ? void 0 : _a.abort();
-      this.abort = new AbortController();
-      debugInfo(`Виджет #${this.debugId}: запрос докторов для viewport`);
-      const response = await fetch(`${apiUrl}/api/v1/doctors_on_map`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          lat: center[1],
-          lon: center[0],
-          radiusKm
-        }),
-        signal: this.abort.signal
-      });
-      if (!response.ok) throw new Error(`API вернул ошибку ${response.status}`);
-      const payload = await response.json();
-      return (payload.doctors ?? []).map(normalizeDoctor).filter((item) => Boolean(item));
+      if (this.allDoctorsApiUrl !== apiUrl) {
+        this.abort?.abort();
+        this.allDoctorsPromise = null;
+        this.allDoctorsApiUrl = apiUrl;
+      }
+      if (!this.allDoctorsPromise) {
+        this.abort = new AbortController();
+        const promise = fetch(`${apiUrl}/api/v1/doctors_on_map`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lat: 0, lon: 0, radiusKm: 0 }),
+          signal: this.abort.signal
+        }).then(async response => {
+          if (!response.ok) throw new Error(`API вернул ошибку ${response.status}`);
+          const payload = await response.json();
+          return (payload.doctors ?? []).map(normalizeDoctor).filter(Boolean);
+        });
+        this.allDoctorsPromise = promise;
+        promise.catch(() => {
+          if (this.allDoctorsPromise === promise) this.allDoctorsPromise = null;
+        });
+      }
+      const doctors = await this.allDoctorsPromise;
+      return doctors.filter(doctor => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
     }
+
     scheduleViewportRefresh(bounds) {
       var _a;
       if (bounds) this.latestBounds = bounds;
@@ -629,6 +637,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           detail: { doctors: doctors.length, radiusKm: request.radiusKm }
         }));
       } catch (error) {
+        if (requestId === this.requestId) this.lastViewportKey = "";
         if (error instanceof DOMException && error.name === "AbortError") return;
         debugError(`Виджет #${this.debugId}: не удалось обновить данные viewport`, error);
         if (this.selectedGroup) {
@@ -669,13 +678,19 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         const ymaps = await loadYandexMaps(apiKey);
         this.ymaps = ymaps;
         const center = [numberAttribute(this, "center-lon", DEFAULT_CENTER[0]), numberAttribute(this, "center-lat", DEFAULT_CENTER[1])];
+        // Keep the Urals centered and adapt the starting zoom to the map size.
+        const defaultZoom = 1 + Math.max(0, Math.min(2.5,
+          Math.log2((mapElement.clientWidth || 360) / (256 * 260 / 360)),
+          Math.log2((mapElement.clientHeight || 400) / (256 * 0.5))
+        ));
+        const zoom = numberAttribute(this, "zoom", defaultZoom);
         debugInfo(`Виджет #${this.debugId}: создаём YMap`, {
           center,
-          zoom: numberAttribute(this, "zoom", 4),
+          zoom,
           elementSize: { width: mapElement.clientWidth, height: mapElement.clientHeight }
         });
         this.map = new ymaps.YMap(mapElement, {
-          location: { center, zoom: numberAttribute(this, "zoom", 4) },
+          location: { center, zoom },
           behaviors: ["drag", "scrollZoom", "pinchZoom", "dblClick"]
         });
         debugInfo(`Виджет #${this.debugId}: YMap создан`);
@@ -796,7 +811,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     zoomToCluster(coordinates) {
       if (!this.map) return;
-      const currentZoom = this.map.zoom ?? numberAttribute(this, "zoom", 4);
+      const currentZoom = this.map.zoom ?? numberAttribute(this, "zoom", 2);
       const location = {
         center: coordinates,
         zoom: nextClusterZoom(currentZoom),
