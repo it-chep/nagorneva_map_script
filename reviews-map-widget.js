@@ -62,22 +62,22 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-map-placeholder[hidden] { display: none; }
   .nrw-map-placeholder::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(25deg, transparent 0 46px, rgba(255,255,255,.27) 47px 49px); }
   .nrw-map-placeholder span { position: relative; z-index: 1; max-width: 340px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,.86); }
-  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 100%; padding: 29px 40px 40px; overflow: hidden; flex-direction: column; }
-  .nrw-title { margin: 0 0 23px; font-size: 32px; line-height: 1.2; font-weight: 600; }
+  .nrw-panel { display: flex; min-width: 0; min-height: 0; height: 100%; padding: clamp(32px, 3.125vw, 60px) clamp(28px, 4.1667vw, 80px) 40px; overflow-y: auto; flex-direction: column; }
+  .nrw-title { min-width: 0; margin: 0 0 clamp(24px, 2.0833vw, 40px); font-size: clamp(22px, 1.6667vw, 32px); line-height: 1.3; font-weight: 700; text-transform: uppercase; flex: 0 0 auto; }
   .nrw-title-mini { display: none; }
-  .nrw-description { max-width: 831px; margin: 0; font-size: 18px; line-height: 1.3; }
-  .nrw-description p { margin: 0 0 14px; }
+  .nrw-description { min-width: 0; max-width: 831px; margin: 0; font-size: clamp(14px, .9375vw, 18px); line-height: 1.4; font-weight: 400; flex: 0 0 auto; }
+  .nrw-description p { margin: 0 0 clamp(16px, 1.25vw, 24px); }
   .nrw-description p:last-child { margin-bottom: 0; }
-  .nrw-description-accent { font-weight: 600; }
+  .nrw-description-accent { font-weight: 700; }
   .nrw-nowrap { white-space: nowrap; }
   .nrw-description-mini { display: none; }
   .nrw-panel.has-selection .nrw-title-full,
   .nrw-panel.has-selection .nrw-description-full { display: none; }
   .nrw-panel.has-selection .nrw-title-mini,
   .nrw-panel.has-selection .nrw-description-mini { display: block; }
-  .nrw-total { display: flex; margin: 32px 0 0; align-items: center; flex-wrap: wrap; gap: 12px 16px; font-size: 18px; line-height: 1.3; font-weight: 600; flex: 0 0 auto; }
+  .nrw-total { display: flex; min-width: 0; margin: clamp(28px, 2.5vw, 48px) 0 0; align-items: center; flex-wrap: wrap; gap: 12px 16px; font-size: clamp(14px, .9375vw, 18px); line-height: 1.4; font-weight: 700; flex: 0 0 auto; }
   .nrw-total[hidden] { display: none; }
-  .nrw-total-count { display: inline-block; padding: 4px 24px; border-radius: 999px; color: #fff; background: #b33232; font-size: 44px; line-height: 1.1; font-weight: 700; }
+  .nrw-total-count { display: inline-flex; min-width: clamp(150px, 11.875vw, 228px); min-height: clamp(54px, 4.1667vw, 80px); padding: 6px 24px; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #526b98; font-size: clamp(44px, 3.3333vw, 64px); line-height: 1; font-weight: 800; letter-spacing: .04em; }
   .nrw-review-area { position: relative; min-height: 0; margin-top: 32px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
   .nrw-review-area[hidden] { display: none; }
   .nrw-review-area.has-review-list { display: flex; flex-direction: column; gap: 12px; }
@@ -141,22 +141,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-cluster { display: grid; width: 54px; height: 54px; padding: 0; place-items: center; border: 6px solid #fff; border-radius: 50%; color: #fff; background: #9eafc0; box-shadow: 0 3px 8px rgba(70,85,100,.28); font-size: 18px; line-height: 1; font-weight: 700; cursor: pointer; pointer-events: auto; transform: translate(-50%, -50%); transition: transform .18s ease, background-color .18s ease; }
   .nrw-cluster:hover { background: #91a5b8; transform: translate(-50%, -50%) scale(1.06); }
   .nrw-cluster:focus-visible { outline: 3px solid #1b66a9; outline-offset: 3px; }
-  @media (min-width: 768px) and (max-height: 900px) {
-    .nrw-panel { padding: 24px 32px 28px; }
-    .nrw-title { margin-bottom: 14px; }
-    .nrw-description p { margin-bottom: 9px; }
-    .nrw-total { margin-top: 20px; }
-    .nrw-review-area { margin-top: 20px; }
-  }
   @media (min-width: 768px) and (max-height: 700px) {
-    .nrw-panel { padding: 18px 26px 22px; overflow-y: auto; }
-    .nrw-title { margin-bottom: 10px; }
-    .nrw-description p { margin-bottom: 6px; }
-    .nrw-total { margin-top: 12px; }
-    .nrw-review-area { min-height: 220px; margin-top: 12px; flex: 1 1 auto; }
-  }
-  @media (min-width: 768px) and (max-height: 550px) {
-    .nrw-description { font-size: 16px; }
+    .nrw-review-area { min-height: 220px; margin-top: 24px; flex: 1 1 auto; }
   }
   @media (max-width: 767px) {
     .nrw-shell { display: flex; height: auto; min-height: 0; flex-direction: column; }
@@ -166,10 +152,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-panel.has-selection .nrw-description-full { display: block; }
     .nrw-panel.has-selection .nrw-title-mini,
     .nrw-panel.has-selection .nrw-description-mini { display: none; }
-    .nrw-title { order: 1; margin: 26px 20px 18px; font-size: 22px; white-space: normal; }
-    .nrw-description { order: 2; max-width: none; margin: 0 0 21px; padding: 0 20px; font-size: 16px; }
-    .nrw-total { order: 2; margin: 0 20px 24px; font-size: 16px; }
-    .nrw-total-count { padding: 4px 20px; font-size: 36px; }
+    .nrw-title { order: 1; margin: 32px 20px 24px; font-size: 22px; white-space: normal; }
+    .nrw-description { order: 2; max-width: none; margin: 0; padding: 0 20px; font-size: 16px; }
+    .nrw-description p { margin-bottom: 20px; }
+    .nrw-total { order: 2; margin: 28px 20px 32px; font-size: 16px; }
+    .nrw-total-count { min-width: 136px; min-height: 52px; padding: 6px 24px; font-size: 40px; }
     .nrw-review-area { order: 4; width: 100%; min-height: 412px; margin: 0 0 17px; padding: 15px; }
     .nrw-review-area.has-review-list { height: 412px; }
     .nrw-review-list { height: 100%; max-height: none; margin: 0; padding-right: 4px; overflow-x: hidden; overflow-y: auto; }
@@ -507,11 +494,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       (_c = (_b = this.map) == null ? void 0 : _b.destroy) == null ? void 0 : _c.call(_b);
     }
     renderShell() {
-      if (!document.getElementById("nrw-montserrat-font")) {
+      if (!document.getElementById("nrw-montserrat-font") && !document.querySelector('link[href*="fonts.googleapis.com/"][href*="family=Montserrat"]')) {
         const fontLink = document.createElement("link");
         fontLink.id = "nrw-montserrat-font";
         fontLink.rel = "stylesheet";
-        fontLink.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap";
+        fontLink.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&subset=latin,cyrillic&display=swap";
         document.head.append(fontLink);
       }
       this.root.innerHTML = `
@@ -525,19 +512,19 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           <div class="nrw-map-placeholder"><span>Карта загружается…</span></div>
         </div>
         <div class="nrw-panel">
-          <h2 class="nrw-title nrw-title-full">География наших учеников: реальные отзывы врачей</h2>
+          <h2 class="nrw-title nrw-title-full">География наших учеников:<br>реальные отзывы врачей</h2>
           <h2 class="nrw-title nrw-title-mini">Отзывы наших учеников</h2>
           <div class="nrw-description nrw-description-full">
             <p>Лучше всего о качестве обучения расскажет тот, кто прошел уже этот путь!</p>
             <p>Наши ученики работают в разных городах России и за ее пределами, но их объединяет стремление развиваться в профессии и совершенствовать свои навыки ультразвуковой диагностики.</p>
             <p>На интерактивной карте вы можете увидеть, где работают врачи, прошедшие обучение в нашей ШКОЛЕ, познакомиться с их отзывами и узнать, какие впечатления и результаты они получили от обучения.</p>
             <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
-            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!️</span></p>
+            <p class="nrw-description-accent">И помните — нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!</span></p>
           </div>
           <div class="nrw-description nrw-description-mini">
             <p>Реальные отзывы врачей, прошедших обучение в нашей ШКОЛЕ.</p>
             <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
-            <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!️</span></p>
+            <p class="nrw-description-accent">И помните — нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!</span></p>
           </div>
           <p class="nrw-total" hidden aria-live="polite">
             <span>Общее количество учеников:</span>
