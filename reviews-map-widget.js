@@ -75,6 +75,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-panel.has-selection .nrw-description-full { display: none; }
   .nrw-panel.has-selection .nrw-title-mini,
   .nrw-panel.has-selection .nrw-description-mini { display: block; }
+  .nrw-total { display: flex; margin: 32px 0 0; align-items: center; flex-wrap: wrap; gap: 12px 16px; font-size: 18px; line-height: 1.3; font-weight: 600; flex: 0 0 auto; }
+  .nrw-total[hidden] { display: none; }
+  .nrw-total-count { display: inline-block; padding: 4px 24px; border-radius: 999px; color: #fff; background: #b33232; font-size: 44px; line-height: 1.1; font-weight: 700; }
   .nrw-review-area { position: relative; min-height: 0; margin-top: 32px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
   .nrw-review-area[hidden] { display: none; }
   .nrw-review-area.has-review-list { display: flex; flex-direction: column; gap: 12px; }
@@ -142,12 +145,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-panel { padding: 24px 32px 28px; }
     .nrw-title { margin-bottom: 14px; }
     .nrw-description p { margin-bottom: 9px; }
+    .nrw-total { margin-top: 20px; }
     .nrw-review-area { margin-top: 20px; }
   }
   @media (min-width: 768px) and (max-height: 700px) {
     .nrw-panel { padding: 18px 26px 22px; overflow-y: auto; }
     .nrw-title { margin-bottom: 10px; }
     .nrw-description p { margin-bottom: 6px; }
+    .nrw-total { margin-top: 12px; }
     .nrw-review-area { min-height: 220px; margin-top: 12px; flex: 1 1 auto; }
   }
   @media (min-width: 768px) and (max-height: 550px) {
@@ -163,6 +168,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-panel.has-selection .nrw-description-mini { display: none; }
     .nrw-title { order: 1; margin: 26px 20px 18px; font-size: 22px; white-space: normal; }
     .nrw-description { order: 2; max-width: none; margin: 0 0 21px; padding: 0 20px; font-size: 16px; }
+    .nrw-total { order: 2; margin: 0 20px 24px; font-size: 16px; }
+    .nrw-total-count { padding: 4px 20px; font-size: 36px; }
     .nrw-review-area { order: 4; width: 100%; min-height: 412px; margin: 0 0 17px; padding: 15px; }
     .nrw-review-area.has-review-list { height: 412px; }
     .nrw-review-list { height: 100%; max-height: none; margin: 0; padding-right: 4px; overflow-x: hidden; overflow-y: auto; }
@@ -532,6 +539,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             <p class="nrw-description-accent">Выберите город или отметку на карте и узнайте, что говорят <span class="nrw-nowrap">о нас коллеги!</span></p>
             <p class="nrw-description-accent">И помните - нет границ для обучения! Наши ученики <span class="nrw-nowrap">по всему миру!️</span></p>
           </div>
+          <p class="nrw-total" hidden aria-live="polite">
+            <span>Общее количество учеников:</span>
+            <span class="nrw-total-count"></span>
+          </p>
           <div class="nrw-review-area" hidden aria-live="polite"></div>
         </div>
       </section>`;
@@ -564,7 +575,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     async fetchDoctors(center, radiusKm) {
       if (this.isDemo) {
-        return getDemoDoctors().filter((doctor) => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
+        const doctors = getDemoDoctors();
+        this.renderTotalCount(doctors.length);
+        return doctors.filter((doctor) => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
       }
       const apiUrl = (this.getAttribute("api-url") || "").replace(/\/$/, "");
       if (!apiUrl) throw new Error("Для виджета не указан api-url");
@@ -572,6 +585,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         this.abort?.abort();
         this.allDoctorsPromise = null;
         this.allDoctorsApiUrl = apiUrl;
+        this.renderTotalCount(null);
       }
       if (!this.allDoctorsPromise) {
         this.abort = new AbortController();
@@ -583,15 +597,28 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         }).then(async response => {
           if (!response.ok) throw new Error(`API вернул ошибку ${response.status}`);
           const payload = await response.json();
-          return (payload.doctors ?? []).map(normalizeDoctor).filter(Boolean);
+          return {
+            doctors: (payload.doctors ?? []).map(normalizeDoctor).filter(Boolean),
+            allDoctorsCount: payload.all_doctors_count
+          };
         });
         this.allDoctorsPromise = promise;
         promise.catch(() => {
           if (this.allDoctorsPromise === promise) this.allDoctorsPromise = null;
         });
       }
-      const doctors = await this.allDoctorsPromise;
+      const promise = this.allDoctorsPromise;
+      const { doctors, allDoctorsCount } = await promise;
+      if (this.allDoctorsPromise === promise) this.renderTotalCount(allDoctorsCount);
       return doctors.filter(doctor => radiusKm <= 0 || distanceKm(center, [doctor.lon, doctor.lat]) <= radiusKm);
+    }
+
+    renderTotalCount(value) {
+      const total = this.root.querySelector(".nrw-total");
+      const count = typeof value === "number" || typeof value === "string" && value.trim() !== "" ? Number(value) : NaN;
+      const isValid = Number.isSafeInteger(count) && count >= 0;
+      total.hidden = !isValid;
+      total.querySelector(".nrw-total-count").textContent = isValid ? String(count) : "";
     }
 
     scheduleViewportRefresh(bounds) {
