@@ -76,8 +76,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   .nrw-panel.has-selection .nrw-title-mini,
   .nrw-panel.has-selection .nrw-description-mini { display: block; }
   .nrw-total { display: flex; min-width: 0; margin: clamp(28px, 2.5vw, 48px) 0 0; align-items: center; flex-wrap: wrap; gap: 12px 16px; font-size: clamp(14px, .9375vw, 18px); line-height: 1.4; font-weight: 700; flex: 0 0 auto; }
-  .nrw-total[hidden] { display: none; }
-  .nrw-total-count { display: inline-flex; min-width: clamp(150px, 11.875vw, 228px); min-height: clamp(54px, 4.1667vw, 80px); padding: 6px 24px; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #526b98; font-size: clamp(44px, 3.3333vw, 64px); line-height: 1; font-weight: 800; letter-spacing: .04em; }
+  .nrw-total[hidden],
+  .nrw-panel.has-selection .nrw-total { display: none; }
+  .nrw-total-count { display: inline-flex; min-width: clamp(150px, 11.875vw, 228px); min-height: clamp(54px, 4.1667vw, 80px); padding: 6px 24px; align-items: center; justify-content: center; border-radius: 999px; color: #fff; background: #b33232; font-size: clamp(44px, 3.3333vw, 64px); line-height: 1; font-weight: 800; letter-spacing: .04em; }
   .nrw-review-area { position: relative; min-height: 0; margin-top: 32px; padding: 15px; overflow: hidden; border-radius: 15px; background: #dfe4e9; flex: 1 1 auto; }
   .nrw-review-area[hidden] { display: none; }
   .nrw-review-area.has-review-list { display: flex; flex-direction: column; gap: 12px; }
@@ -150,6 +151,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     .nrw-panel { display: contents; }
     .nrw-panel.has-selection .nrw-title-full,
     .nrw-panel.has-selection .nrw-description-full { display: block; }
+    .nrw-panel.has-selection .nrw-description-full { margin-bottom: 32px; }
     .nrw-panel.has-selection .nrw-title-mini,
     .nrw-panel.has-selection .nrw-description-mini { display: none; }
     .nrw-title { order: 1; margin: 32px 20px 24px; font-size: 22px; white-space: normal; }
